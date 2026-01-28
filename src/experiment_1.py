@@ -6,8 +6,13 @@ from nltk.probability import FreqDist
 import os
 
 # --- SETUP ---
-# Download necessary NLTK data (safe to run multiple times)
-nltk.download('punkt', quiet=True)
+# Updated: newer NLTK versions require 'punkt_tab' specifically
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    print("Downloading required NLTK data...")
+    nltk.download('punkt_tab', quiet=True)
+    nltk.download('punkt', quiet=True) # Keeping legacy just in case
 
 def run_aim_1():
     print("\n" + "="*40)
@@ -15,7 +20,6 @@ def run_aim_1():
     print("="*40)
 
     # 1. Load Data
-    # Try to read from file, otherwise use default text
     file_path = os.path.join("data", "sample.txt")
     
     if os.path.exists(file_path):
@@ -32,6 +36,7 @@ def run_aim_1():
         """
 
     # 2. Tokenization
+    # word_tokenize relies on sentence tokenization internally, which needs punkt_tab
     tokens = word_tokenize(text_content)
     print(f"\nTotal Tokens: {len(tokens)}")
     print(f"First 10 tokens: {tokens[:10]}")
@@ -77,10 +82,9 @@ def run_aim_2():
         
         # Logic for Teach -> Taught (Irregular)
         elif root == "Teach" and final == "Taught":
-            delete_rule = "Ch"  # Deleting 'ch' from Teach leaves 'Tea' (Simulated logic)
+            delete_rule = "Ch"  # Deleting 'ch' from Teach leaves 'Tea'
             add_rule = "ught"   # Adding 'ught' makes 'Taught'
-            # Note: The theory example says Delete: Ch, Add: aught. 
-            # We will strictly follow the theory manual mapping here:
+            # We strictly follow the theory manual mapping here:
             delete_rule = "Ch"
             add_rule = "aught"
 
