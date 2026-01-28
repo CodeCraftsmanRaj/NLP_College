@@ -5,21 +5,18 @@ from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
 import os
 
-# --- SETUP ---
-# Updated: newer NLTK versions require 'punkt_tab' specifically
 try:
     nltk.data.find('tokenizers/punkt_tab')
 except LookupError:
     print("Downloading required NLTK data...")
     nltk.download('punkt_tab', quiet=True)
-    nltk.download('punkt', quiet=True) # Keeping legacy just in case
+    nltk.download('punkt', quiet=True)
 
 def run_aim_1():
     print("\n" + "="*40)
     print(" AIM 1: NLTK Basic Analysis & FreqDist")
     print("="*40)
 
-    # 1. Load Data
     file_path = os.path.join("data", "sample.txt")
     
     if os.path.exists(file_path):
@@ -35,76 +32,86 @@ def run_aim_1():
         respond to spoken commands, and summarize large volumes of text rapidly.
         """
 
-    # 2. Tokenization
-    # word_tokenize relies on sentence tokenization internally, which needs punkt_tab
     tokens = word_tokenize(text_content)
-    print(f"\nTotal Tokens: {len(tokens)}")
+    print(f"\nTotal Tokens before removal: {len(tokens)}")
     print(f"First 10 tokens: {tokens[:10]}")
 
-    # 3. Frequency Distribution
-    fdist = FreqDist(tokens)
-    print("\nTop 5 Most Common Words:")
+    print("\n" + "-"*30)
+    print(" STOP WORD REMOVAL (MANUAL)")
+    print("-" * 30)
+    
+    user_input = input("Enter stop words to remove (separated by space, e.g., 'the is and of'): ")
+    
+    stop_words_list = [w.strip().lower() for w in user_input.split()]
+    
+    print(f"Stop words to remove: {stop_words_list}")
+
+    filtered_tokens = []
+    
+    for token in tokens:
+        if token.lower() not in stop_words_list:
+            filtered_tokens.append(token)
+
+    print(f"\nTotal Tokens after removal: {len(filtered_tokens)}")
+    print(f"First 10 filtered tokens: {filtered_tokens[:10]}")
+
+    fdist = FreqDist(filtered_tokens)
+    print("\nTop 5 Most Common Words (After Cleanup):")
     print(fdist.most_common(5))
 
-    # 4. Plotting
     print("\nDisplaying Frequency Plot... (Close the plot window to continue)")
-    plt.figure(figsize=(10, 5))
-    plt.title("Word Frequency Distribution")
+    plt.figure(figsize=(10, 7))  
+    plt.title("Word Frequency Distribution (Stop Words Removed)")
     fdist.plot(20, cumulative=False)
-    plt.show() # This will open a popup window
+    plt.show() 
 
 def run_aim_2():
     print("\n" + "="*40)
     print(" AIM 2: Morphological Analysis (Add-Delete Table)")
     print("="*40)
 
-    # Data defined manually based on the experiment theory
-    data = [
-        # Root, Final, Number, Gender, Case
-        ("Teach", "Teaches", "Singular", "-", "Present"),
-        ("Teach", "Taught", "Singular", "-", "Past"),
-        ("Play", "Played", "-", "-", "Past"),
-        ("Play", "Playing", "-", "-", "Continuous"),
-        ("Push", "Pushes", "Singular", "-", "Present")
-    ]
-
+    user_root = input("Enter Source/Root Word (e.g., teach): ").strip()
+    user_final = input("Enter Final Form Word (e.g., teaches): ").strip()
+    
     results = []
 
-    for root, final, num, gen, case in data:
+    if user_root and user_final:
         delete_rule = "-"
         add_rule = "-"
-
-        # Logic for Teach -> Teaches / Push -> Pushes
-        if final.startswith(root):
-            suffix = final[len(root):]
-            if suffix:
-                add_rule = suffix
         
-        # Logic for Teach -> Taught (Irregular)
-        elif root == "Teach" and final == "Taught":
-            delete_rule = "Ch"  # Deleting 'ch' from Teach leaves 'Tea'
-            add_rule = "ught"   # Adding 'ught' makes 'Taught'
-            # We strictly follow the theory manual mapping here:
-            delete_rule = "Ch"
-            add_rule = "aught"
+        common_len = 0
+        min_len = min(len(user_root), len(user_final))
+        
+        for i in range(min_len):
+            if user_root[i] == user_final[i]:
+                common_len += 1
+            else:
+                break
+        
+        del_str = user_root[common_len:]
+        add_str = user_final[common_len:]
+
+        if del_str:
+            delete_rule = del_str
+        if add_str:
+            add_rule = add_str
 
         results.append({
-            "Source (Root)": root,
-            "Final Form": final,
+            "Source (Root)": user_root,
+            "Final Form": user_final,
             "Delete": delete_rule,
             "Add": add_rule,
-            "Number": num,
-            "Gender": gen,
-            "Case": case
+            "Number": "User-Input",
+            "Gender": "-",
+            "Case": "-"
         })
 
-    # Create DataFrame
     df = pd.DataFrame(results)
     
-    # Adjust formatting for terminal output
     pd.set_option('display.max_columns', None)
     pd.set_option('display.width', 1000)
     
+    print("\nFinal Add-Delete Table:")
     print(df)
 
 if __name__ == "__main__":
