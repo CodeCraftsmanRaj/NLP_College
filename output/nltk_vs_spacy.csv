@@ -1,0 +1,8 @@
+Aspect,NLTK,spaCy
+Focus,"Educational toolkit, classic NLP tasks",Industrial-strength NLP pipelines
+Tokenization,Rule/statistical tokenizers,Fast rule-based tokenizer
+POS/NER,"Available, slower, less optimized",High-performance trained models
+Parsing,Multiple parsers (educational),Fast dependency parser
+Ease of use,Flexible but requires setup,Simple pipeline API
+Speed,Moderate,Very fast
+Best use,"Learning, research, prototyping",Production NLP applications
