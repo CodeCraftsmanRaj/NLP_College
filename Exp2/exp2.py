@@ -118,12 +118,98 @@ class CustomPorterStemmer:
             return word[:-1] + "i"
         return word
 
+    def step2(self, word):
+        suffixes = {
+            "ational": "ate",
+            "tional": "tion",
+            "enci": "ence",
+            "anci": "ance",
+            "izer": "ize",
+            "abli": "able",
+            "alli": "al",
+            "entli": "ent",
+            "eli": "e",
+            "ousli": "ous",
+            "ization": "ize",
+            "ation": "ate",
+            "ator": "ate",
+            "alism": "al",
+            "iveness": "ive",
+            "fulness": "ful",
+            "ousness": "ous",
+            "aliti": "al",
+            "iviti": "ive",
+            "biliti": "ble"
+        }
+
+        for suffix in suffixes:
+            if word.endswith(suffix):
+                stem = word[:-len(suffix)]
+                if self.measure(stem) > 0:
+                    return stem + suffixes[suffix]
+        return word
+
+    def step3(self, word):
+        suffixes = {
+            "icate": "ic",
+            "ative": "",
+            "alize": "al",
+            "iciti": "ic",
+            "ical": "ic",
+            "ful": "",
+            "ness": ""
+        }
+
+        for suffix in suffixes:
+            if word.endswith(suffix):
+                stem = word[:-len(suffix)]
+                if self.measure(stem) > 0:
+                    return stem + suffixes[suffix]
+        return word
+
+    def step4(self, word):
+        suffixes = [
+            "al", "ance", "ence", "er", "ic", "able", "ible",
+            "ant", "ement", "ment", "ent", "ion", "ou",
+            "ism", "ate", "iti", "ous", "ive", "ize"
+        ]
+
+        for suffix in suffixes:
+            if word.endswith(suffix):
+                stem = word[:-len(suffix)]
+                if self.measure(stem) > 1:
+                    if suffix == "ion":
+                        if stem.endswith("s") or stem.endswith("t"):
+                            return stem
+                    else:
+                        return stem
+        return word
+
+    def step5(self, word):
+        if word.endswith("e"):
+            stem = word[:-1]
+            if self.measure(stem) > 1:
+                return stem
+            if self.measure(stem) == 1 and not self.is_consonant(stem, -1):
+                return stem
+
+        if word.endswith("ll") and self.measure(word[:-1]) > 1:
+            return word[:-1]
+
+        return word
+
+
     def stem(self, word):
         word = word.lower()
         word = self.step1a(word)
         word = self.step1b(word)
         word = self.step1c(word)
+        word = self.step2(word)
+        word = self.step3(word)
+        word = self.step4(word)
+        word = self.step5(word)
         return word
+
 
 
 # ---------------- LOAD CORPUS ----------------
