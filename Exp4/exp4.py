@@ -12,7 +12,9 @@ nltk.download('universal_tagset')
 np.set_printoptions(threshold=np.inf, linewidth=200)
 
 # Take ONLY ONE sentence from Brown corpus
-tagged_sentence = brown.tagged_sents(tagset='universal')[100]
+# tagged_sentence = brown.tagged_sents(tagset='universal')[100]
+
+tagged_sentence = [('Daniel', 'NOUN'), ('personally', 'ADV'), ('likes', 'VERB'), ('to', 'PRT'), ('read', 'VERB')]
 
 print("\nSentence Used For Computation:\n")
 print([word.lower() for word, tag in tagged_sentence])
@@ -51,13 +53,11 @@ start_prob = np.zeros(N)
 transition_matrix = np.zeros((N, N))
 emission_matrix = np.zeros((N, V))
 
-# Start probability
 for tag in tags:
     start_prob[tag_index[tag]] = start_counts[tag]
 
 start_prob = start_prob / start_prob.sum()
 
-# Transition matrix
 for prev_tag in tags:
     for tag in tags:
         transition_matrix[tag_index[prev_tag]][tag_index[tag]] = transition_counts[prev_tag][tag]
