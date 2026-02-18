@@ -22,10 +22,31 @@ for sent in sentences:
 vocab = list(unigram_counts.keys())
 V = len(vocab)
 
+print("\nUNIGRAM COUNTS")
+for w in unigram_counts:
+    print(w, ":", unigram_counts[w])
+
+print("\nBIGRAM COUNTS")
+for prev in bigram_counts:
+    for curr in bigram_counts[prev]:
+        print(f"({prev}, {curr}) :", bigram_counts[prev][curr])
+
+print("\nBIGRAM PROBABILITIES (NO SMOOTHING)")
+for prev in bigram_counts:
+    for curr in bigram_counts[prev]:
+        print(f"P({curr}|{prev}) =", bigram_counts[prev][curr] / unigram_counts[prev])
+
+print("\nBIGRAM PROBABILITIES (ADD-ONE SMOOTHING)")
+for prev in unigram_counts:
+    for curr in vocab:
+        print(
+            f"P*({curr}|{prev}) =",
+            (bigram_counts[prev][curr] + 1) / (unigram_counts[prev] + V)
+        )
+
 def sentence_probability(sentence, smoothing=False):
     tokens = ["<s>"] + sentence.lower().split() + ["</s>"]
     prob = 1
-    print("\nSentence:", sentence)
     for i in range(1, len(tokens)):
         prev = tokens[i-1]
         curr = tokens[i]
