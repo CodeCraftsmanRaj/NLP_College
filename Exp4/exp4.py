@@ -8,11 +8,7 @@ from hmmlearn import hmm
 nltk.download('brown')
 nltk.download('universal_tagset')
 
-# Print full matrices without truncation
 np.set_printoptions(threshold=np.inf, linewidth=200)
-
-# Take ONLY ONE sentence from Brown corpus
-# tagged_sentence = brown.tagged_sents(tagset='universal')[100]
 
 tagged_sentence = [('Daniel', 'NOUN'), ('personally', 'ADV'), ('likes', 'VERB'), ('to', 'PRT'), ('read', 'VERB')]
 
@@ -87,7 +83,6 @@ print(transition_matrix)
 print("\nFull Emission Matrix:\n")
 print(emission_matrix)
 
-# Sentence words only
 sentence = [word.lower() for word, tag in tagged_sentence]
 
 def get_possible_tags(word):
