@@ -1,0 +1,6 @@
+Text,Entities
+Jeff Bezos founded Amazon in Seattle.,"[('Jeff Bezos', 'PERSON'), ('Amazon', 'ORG'), ('Seattle', 'GPE')]"
+Tesla operates in California.,"[('Tesla', 'ORG'), ('California', 'GPE')]"
+Elon Musk is the CEO of Tesla and SpaceX.,"[('Elon Musk', 'PERSON'), ('Tesla', 'ORG'), ('SpaceX.', 'GPE')]"
+Microsoft has offices in Seattle.,"[('Microsoft', 'ORG'), ('Seattle', 'GPE')]"
+Mark Zuckerberg founded Facebook in California.,"[('Mark Zuckerberg', 'PERSON'), ('Facebook', 'ORG'), ('California', 'GPE')]"
